@@ -7,7 +7,8 @@ import (
 	"github.com/unawaretub86/top-secret/internal/domain/entities"
 )
 
-func ConvertToTopSecretRequest(body string, requestId string) (*entities.Satellites, error) {
+// La función Decode toma un JSON y lo convierte en una estructura tipo Satellites.
+func Decode(body string, requestId string) (*entities.Satellites, error) {
 	satellites := &entities.Satellites{}
 
 	err := json.Unmarshal([]byte(body), &satellites)
@@ -16,5 +17,6 @@ func ConvertToTopSecretRequest(body string, requestId string) (*entities.Satelli
 		return nil, err
 	}
 
+	// Devuelve los satellites.
 	return satellites, nil
 }

@@ -1,9 +1,10 @@
 package usecase
 
 import (
+	"fmt"
 	"strings"
 
-	"github.com/unawaretub86/top-secret/internal/domain/request"
+	"github.com/unawaretub86/top-secret/internal/config/errors"
 )
 
 type MessageUseCase struct{}
@@ -12,32 +13,67 @@ func NewMessageUseCase() *MessageUseCase {
 	return &MessageUseCase{}
 }
 
-// GetMessage es una función que recupera y procesa un mensaje a partir de mensajes recibidos desde diferentes satélites.
-// Devuelve un mensaje combinado y procesado como una cadena de texto.
-func GetMessage(requestId string, messages ...[]string) (msg string) {
-	var kenobi, skywalker, sato, fixMsg []string
+// GetMessage toma una solicitud y una matriz de mensajes y devuelve el mensaje concatenado.
+func (useCase *MessageUseCase) GetMessage(requestID string, messages ...[]string) (string, error) {
+	if len(messages) < 3 {
+		fmt.Printf("[RequestId: %s][%v]", requestID, errors.ErrInvalidSatellites)
+		return "", errors.ErrInvalidSatellites
+	}
 
-	// Itera a través de las primeras 5 palabras de los mensajes de los satélites.
-	for i := 0; i != 5; i++ {
-		// Comprueba si la palabra del satélite Kenobi no es vacio.
-		if kenobi[i] != "" {
-			// Verifica si la palabra ya se encuentra en el mensaje procesado y, si no, la agrega.
-			if !request.Contains(fixMsg, kenobi[i]) {
-				fixMsg = append(fixMsg, kenobi[i])
-			}
-		}
-		if skywalker[i] != "" {
-			if !request.Contains(fixMsg, skywalker[i]) {
-				fixMsg = append(fixMsg, skywalker[i])
-			}
-		}
-		if sato[i] != "" {
-			if !request.Contains(fixMsg, sato[i]) {
-				fixMsg = append(fixMsg, sato[i])
-			}
+	// Inicializa el mensaje resultante con el primer mensaje.
+	message := messages[0]
+
+	for _, m := range messages[1:] {
+		message = useCase.combineMessages(message, m)
+	}
+
+	response := useCase.cleanMessage(message)
+
+	return response, nil
+}
+
+// combineMessages combina dos mensajes en una sola matriz.
+func (useCase *MessageUseCase) combineMessages(message1, message2 []string) (message []string) {
+	maxLen := len(message1)
+
+	// Encuentra la longitud máxima entre los dos mensajes.
+	if len(message2) > len(message1) {
+		maxLen = len(message2)
+	}
+
+	// Combina las partes no vacías de messageA y messageB en un nuevo mensaje.
+	for i := 0; i < maxLen; i++ {
+		if i < len(message1) && message1[i] != "" {
+			message = append(message, message1[i])
+		} else if i < len(message2) && message2[i] != "" {
+			message = append(message, message2[i])
+		} else {
+			message = append(message, "")
 		}
 	}
 
-	// Combina las palabras procesadas en un solo mensaje separado por espacios y devuelve el resultado.
-	return strings.Join(fixMsg, " ")
+	return
+}
+
+// cleanMessage limpia el mensaje y lo convierte en un string.
+func (useCase *MessageUseCase) cleanMessage(message []string) string {
+	msg := strings.Builder{}
+	for idx, v := range message {
+		if v == "" {
+			continue
+		}
+
+		// Verifica si el elemento actual es diferente al siguiente para evitar duplicados.
+		if idx < len(message)-1 && message[idx] != message[idx+1] {
+			msg.WriteString(v)
+			msg.WriteString(" ")
+		}
+	}
+
+	// Agrega el último elemento si no es vacío.
+	if message[len(message)-1] != "" {
+		msg.WriteString(message[len(message)-1])
+	}
+
+	return msg.String()
 }
