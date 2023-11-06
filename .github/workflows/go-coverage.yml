@@ -2,8 +2,7 @@ name: Generate code coverage badge
 
 on:
   pull_request:
-    types: [ready_for_review]
-    
+
 jobs:
   test:
     runs-on: ubuntu-latest
