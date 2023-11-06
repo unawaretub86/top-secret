@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/unawaretub86/top-secret/internal/config/errors"
 	"github.com/unawaretub86/top-secret/internal/domain/entities"
 	"github.com/unawaretub86/top-secret/internal/domain/ports"
@@ -31,6 +33,7 @@ func (topSecretService *topSecretService) GetLocationAndMessage(body string, req
 	satelite := satellites.Satellites
 
 	if len(satellites.Satellites) != 3 {
+		fmt.Printf("[RequestId: %s][%v]", requestID, errors.ErrInvalidSatellites)
 		return nil, errors.ErrInvalidSatellites
 	}
 
