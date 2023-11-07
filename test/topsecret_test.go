@@ -8,7 +8,7 @@ import (
 
 	"github.com/unawaretub86/top-secret/internal/domain/entities"
 	"github.com/unawaretub86/top-secret/internal/domain/services"
-	mocks_test "github.com/unawaretub86/top-secret/internal/test/mocks"
+	mocks_test "github.com/unawaretub86/top-secret/test/mocks"
 )
 
 type mocks struct {
