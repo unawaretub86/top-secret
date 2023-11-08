@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:3000
 paths:
-  /topsecret/:
+  /top-secret/:
     post:
       summary: Calculate the position and message from the spaceships
       description: returns the position x and y and the message provided
@@ -19,7 +19,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Topsecret"
+              $ref: "#/components/schemas/Top-secret"
       responses:
         '200':
           description: Successful response
@@ -34,7 +34,7 @@ paths:
 
 components:
   schemas:
-    Topsecret:
+    Top-secret:
       type: object
       required:
         - name
