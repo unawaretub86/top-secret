@@ -102,7 +102,6 @@ func TestTriangulatePositionErrInvalidSatellite(t *testing.T) {
 	body := `{
 			"satellites": [
 				{
-				"distance": 100.0,
 				"message": ["este", "", "", "mensaje", ""]
 				},
 				{

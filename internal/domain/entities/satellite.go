@@ -16,7 +16,7 @@ type (
 
 func (satellites *Satellites) Validate() error {
 	for _, satellite := range satellites.Satellites {
-		if satellite.Distance == 0 || len(satellite.Message) == 0 || satellite.Name == "" {
+		if satellite.Distance == 0 || len(satellite.Message) == 0 {
 			return errors.ErrInvalidSatellites
 		}
 	}
