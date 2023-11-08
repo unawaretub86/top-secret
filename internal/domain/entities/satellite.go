@@ -1,5 +1,7 @@
 package entities
 
+import "github.com/unawaretub86/top-secret/internal/config/errors"
+
 type (
 	Satellite struct {
 		Name     string   `json:"name" binding:"required"`
@@ -11,3 +13,13 @@ type (
 		Satellites []Satellite `json:"satellites"`
 	}
 )
+
+func (satellites *Satellites) Validate() error {
+	for _, satellite := range satellites.Satellites {
+		if satellite.Distance == 0 || len(satellite.Message) == 0 || satellite.Name == "" {
+			return errors.ErrInvalidSatellites
+		}
+	}
+
+	return nil
+}

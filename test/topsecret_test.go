@@ -6,6 +6,7 @@ import (
 	"github.com/go-playground/assert/v2"
 	"github.com/golang/mock/gomock"
 
+	"github.com/unawaretub86/top-secret/internal/config/errors"
 	"github.com/unawaretub86/top-secret/internal/domain/entities"
 	"github.com/unawaretub86/top-secret/internal/domain/services"
 	mocks_test "github.com/unawaretub86/top-secret/test/mocks"
@@ -69,4 +70,55 @@ func TestTopSecretOK(t *testing.T) {
 		Y:       &r2,
 		Message: &msg,
 	})
+}
+
+func TestTriangulatePositionErrInvalidSatellites(t *testing.T) {
+	m := mocks{
+		triangulationUseCase: mocks_test.NewMockTriangulationPort(gomock.NewController(t)),
+		messageUseCase:       mocks_test.NewMockMessagePort(gomock.NewController(t)),
+	}
+
+	topSecretService := services.NewTopSecretService(m.triangulationUseCase, m.messageUseCase)
+
+	requestID := "test123"
+
+	body := `{}`
+
+	_, err := topSecretService.GetLocationAndMessage(body, requestID)
+
+	assert.Equal(t, err, errors.ErrInvalidSatellites)
+}
+
+func TestTriangulatePositionErrInvalidSatellite(t *testing.T) {
+	m := mocks{
+		triangulationUseCase: mocks_test.NewMockTriangulationPort(gomock.NewController(t)),
+		messageUseCase:       mocks_test.NewMockMessagePort(gomock.NewController(t)),
+	}
+
+	topSecretService := services.NewTopSecretService(m.triangulationUseCase, m.messageUseCase)
+
+	requestID := "test123"
+
+	body := `{
+			"satellites": [
+				{
+				"distance": 100.0,
+				"message": ["este", "", "", "mensaje", ""]
+				},
+				{
+				"name": "skywalker",
+				"distance": 115.5,
+				"message": ["", "es", "", "", "secreto"]
+				},
+				{
+				"name": "sato",
+				"distance": 142.7,
+				"message": ["este", "", "un", "", ""]
+				}
+			]
+			}`
+
+	_, err := topSecretService.GetLocationAndMessage(body, requestID)
+
+	assert.Equal(t, err, errors.ErrInvalidSatellites)
 }

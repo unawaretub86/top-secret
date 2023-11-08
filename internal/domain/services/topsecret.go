@@ -29,6 +29,12 @@ func (topSecretService *topSecretService) GetLocationAndMessage(body string, req
 		return nil, err
 	}
 
+	err = satellites.Validate()
+	if err != nil {
+		fmt.Printf("[RequestId: %s][%v]", requestID, err)
+		return nil, err
+	}
+
 	// obtenemos la informacion particular de cada satellite
 	satelite := satellites.Satellites
 
