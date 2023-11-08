@@ -11,7 +11,7 @@ Go rest para obtener la ubicación de una nave y el mensaje que esta emite
         <li><a href="#hecho-con">Hecho con</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#uso">Usage</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ol>
 </details>
@@ -21,8 +21,15 @@ Go rest para obtener la ubicación de una nave y el mensaje que esta emite
 <!-- ABOUT THE PROJECT -->
 ## Sobre el proyecto
 
-Proyecto desarrollado para la prueba tecnica Fuego de Quasar
-En la cual en el siguiente servicio vamos a encontrar una lambda serverless desarrollada con GOLANG  y una arquitectura hexagonal, la cual nos ayudara a obtener la posicion de el satelite y el mensaje que debemos calcular, esto una vez se hayan recibido los satellites necesarios para llevar a cabo este calculo.
+Este proyecto se ha desarrollado en el contexto de la prueba técnica Fuego de Quasar. En esta prueba, se presenta un servicio FaaS (Function as a Service) que utiliza una función Lambda serverless implementada en Golang. Esta implementación se basa en una arquitectura hexagonal, que proporciona una escalabilidad más sencilla y reduce las preocupaciones relacionadas con la gestión de servidores.
+
+El propósito de este servicio es calcular la posición de un satélite y el mensaje que debe ser descifrado. Esto se logra una vez que se han recibido las señales de todos los satélites necesarios para llevar a cabo el cálculo. El servicio se encarga de procesar los datos de entrada y proporcionar la información necesaria para cumplir con los requisitos del desafío de Fuego de Quasar.
+
+Este servicio utiliza una arquitectura hexagonal diseñada para preservar la integridad de la lógica de negocio y permitir la incorporación de nuevas implementaciones a través de adaptadores, sin necesidad de modificar la lógica existente. Esta estructura proporciona flexibilidad para extender y adaptar el servicio a futuras necesidades, garantizando la coherencia de la aplicación.
+
+En este servicio, hemos incorporado flujos de trabajo de GitHub Actions para asegurar la alta calidad de integración de Git Flow a través de pull requests. Estos flujos de trabajo incluyen acciones como construcción (build), cobertura (coverage) y verificación de código (lint). Esta implementación garantiza una integración fluida y una revisión exhaustiva del código, lo que nos permite mantener altos estándares de calidad en nuestro proyecto.
+
+![Actions](docs/actions.png)
 
 <p align="right">(<a href="#readme-top">Volver al inicio</a>)</p>
 
@@ -36,11 +43,9 @@ En la cual en el siguiente servicio vamos a encontrar una lambda serverless desa
 <p align="right">(<a href="#readme-top">Volver al inicio</a>)</p>
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Uso
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+* [Top Secret](docs/topsecret.md) : `POST /topsecret`
 
 <p align="right">(<a href="#readme-top">Volver al inicio</a>)</p>
 
