@@ -39,11 +39,19 @@ func (topSecretService *topSecretService) GetLocationAndMessage(body string, req
 
 	// Llama a la función GetLocation del caso de uso 'triangulationUseCase' para determinar la ubicación (x, y)
 	// a partir de las distancias recibidas de tres satelites: satelite[0], satelite[1] y satelite[2].
-	x, y := topSecretService.triangulationUseCase.GetLocation(requestID, satelite[0].Distance, satelite[1].Distance, satelite[2].Distance)
+	x, y, err := topSecretService.triangulationUseCase.GetLocation(requestID, satelite[0].Distance, satelite[1].Distance, satelite[2].Distance)
+	if err != nil {
+		fmt.Printf("[RequestId: %s][%v]", requestID, err)
+		return nil, err
+	}
 
 	// Llama a la función GetMessage del caso de uso 'messageUseCase' para obtener el mensaje secreto.
 	// Utiliza el 'requestID' para identificar el mensaje y las palabras recibidas de los satelites satelite[0], satelite[1] y satelite[2].
-	message := topSecretService.messageUseCase.GetMessage(requestID, satelite[0].Message, satelite[1].Message, satelite[2].Message)
+	message, err := topSecretService.messageUseCase.GetMessage(requestID, satelite[0].Message, satelite[1].Message, satelite[2].Message)
+	if err != nil {
+		fmt.Printf("[RequestId: %s][%v]", requestID, err)
+		return nil, err
+	}
 
-	return entities.NewLocationMessage(x, y, message, requestID)
+	return entities.NewLocationMessage(*x, *y, message, requestID)
 }

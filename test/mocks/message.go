@@ -30,11 +30,12 @@ func (m *MockMessagePort) EXPECT() *MockMessagePortMockRecorder {
 
 // Recibe un argumento requestID  y distances
 // y devuelve una respuesta simulada.
-func (m *MockMessagePort) GetMessage(requestID string, messages ...[]string) string {
+func (m *MockMessagePort) GetMessage(requestID string, messages ...[]string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMessage", messages)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetMessage  se utiliza para obtener llamadas al método GetMessage en el mock.

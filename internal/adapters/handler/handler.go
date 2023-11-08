@@ -2,60 +2,48 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambdacontext"
-	"github.com/unawaretub86/top-secret/internal/domain/entities"
-	"github.com/unawaretub86/top-secret/internal/domain/ports"
+	"github.com/unawaretub86/top-secret/internal/domain/services"
+	"github.com/unawaretub86/top-secret/internal/domain/usecase"
 )
 
-type Handler interface {
-	HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error)
-}
+func TopSecretHandler(ctx context.Context, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+	triangulationPort := usecase.NewTriangulationUseCase()
+	messagePort := usecase.NewMessageUseCase()
 
-type handler struct {
-	topSecretPort ports.TopSecretPort
-}
+	topService := services.NewTopSecretService(triangulationPort, messagePort)
 
-func NewHandler(service ports.TopSecretPort) *handler {
-	return &handler{
-		topSecretPort: service,
-	}
-}
-
-func (handler *handler) TopSecretHandler(ctx context.Context, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	lc, _ := lambdacontext.FromContext(ctx)
-
 	requestID := lc.AwsRequestID
-
 	body := request.Body
 
 	// llamamos el port de topsecret para acceder al service
-	bodyResponse, err := handler.topSecretPort.GetLocationAndMessage(body, requestID)
+	bodyResponse, err := topService.GetLocationAndMessage(body, requestID)
 	if err != nil {
-		return handler.handleError(err)
+		return handleError(err)
 	}
 
-	responseBody := handler.formatResponseBody(bodyResponse)
+	responseBody, err := json.Marshal(bodyResponse)
+	if err != nil {
+		return handleError(err)
+	}
 
-	return handler.createResponse(200, responseBody), nil
+	return createResponse(200, string(responseBody)), nil
 }
 
-// esta funcion se encarga de manejar el error haciendo uso de la funcion createResponse
-func (handler *handler) handleError(err error) (*events.APIGatewayProxyResponse, error) {
-	return handler.createResponse(404, fmt.Sprintf("Error: %s", err.Error())), nil
+// handleError maneja los errores y crea una respuesta de error
+func handleError(err error) (*events.APIGatewayProxyResponse, error) {
+	return createResponse(404, fmt.Sprintf("Error: %s", err.Error())), nil
 }
 
-// creamos la respuesta dependiendo el status y el body de la misma
-func (handler *handler) createResponse(statusCode int, body string) *events.APIGatewayProxyResponse {
+// createResponse crea una respuesta con el código de estado y el cuerpo proporcionados
+func createResponse(statusCode int, body string) *events.APIGatewayProxyResponse {
 	return &events.APIGatewayProxyResponse{
 		StatusCode: statusCode,
 		Body:       body,
 	}
-}
-
-// damos formato a la respuesta
-func (handler *handler) formatResponseBody(response *entities.LocationMessage) string {
-	return fmt.Sprintf("{\"X\": \"%v\", \"Y\": \"%v\", \"message\": \"%s\"}", response.X, response.Y, *response.Message)
 }

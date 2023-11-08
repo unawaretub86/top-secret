@@ -55,10 +55,11 @@ func TestTopSecretOK(t *testing.T) {
 
 	var r1 float32 = -185.12361
 	var r2 float32 = 310.74167
+	var r3 error = nil
 	msg := "este es un mensaje secreto"
 
-	m.triangulationUseCase.EXPECT().GetLocation(requestID, d1, d2, d3).Return(r1, r2)
-	m.messageUseCase.EXPECT().GetMessage(requestID, messages[0], messages[1], messages[2]).Return(msg)
+	m.triangulationUseCase.EXPECT().GetLocation(requestID, d1, d2, d3).Return(&r1, &r2, r3)
+	m.messageUseCase.EXPECT().GetMessage(requestID, messages[0], messages[1], messages[2]).Return(msg, r3)
 
 	response, err := topSecretService.GetLocationAndMessage(body, requestID)
 

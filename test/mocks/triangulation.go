@@ -30,12 +30,13 @@ func (m *MockTriangulationPort) EXPECT() *MockTriangulationPortMockRecorder {
 
 // Recibe un argumento requestID  y distances
 // y devuelve una respuesta simulada.
-func (m *MockTriangulationPort) GetLocation(requestID string, distances ...float32) (float32, float32) {
+func (m *MockTriangulationPort) GetLocation(requestID string, distances ...float32) (*float32, *float32, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLocation", distances)
-	ret0, _ := ret[0].(float32)
-	ret1, _ := ret[1].(float32)
-	return ret0, ret1
+	ret0, _ := ret[0].(*float32)
+	ret1, _ := ret[1].(*float32)
+	ret2, _ := ret[1].(error)
+	return ret0, ret1, ret2
 }
 
 // GetLocation  se utiliza para obtener llamadas al método GetLocation en el mock.

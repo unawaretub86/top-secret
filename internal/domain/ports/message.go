@@ -1,5 +1,5 @@
 package ports
 
 type MessagePort interface {
-	GetMessage(string, ...[]string) string
+	GetMessage(string, ...[]string) (string, error)
 }
